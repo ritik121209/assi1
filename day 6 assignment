@@ -1,0 +1,154 @@
+(1)What is the LocalStorage API?
+___________________________________
+
+localStorage is a browser storage feature that allows you to store data permanently in the user's browser.
+
+The stored data does not disappear when the page is refreshed or the browser is restarted
+
+
+  # Basic Functions of localStorage
+  __________________________________
+
+  // Save data
+localStorage.setItem("name", "Ritik")
+
+// Get data
+localStorage.getItem("name")
+
+// Remove specific data
+localStorage.removeItem("name")
+
+// Remove all stored data
+localStorage.clear()
+
+
+  #  Mini App 1 — Dark Mode Toggle (using localStorage)
+  _______________________________________________________
+
+This app will toggle dark mode and remember the user's choice using localStorage
+  
+  #index.html
+
+  <!DOCTYPE html>
+<html>
+<head>
+<title>Dark Mode Toggle</title>
+</head>
+
+<body style="font-family: Arial; text-align:center; padding:50px;">
+
+<h1>Dark Mode Toggle</h1>
+
+<button onclick="toggleMode()">Toggle Dark Mode</button>
+
+<script>
+
+let mode = localStorage.getItem("mode")
+
+if(mode === "dark"){
+    document.body.style.backgroundColor = "black"
+    document.body.style.color = "white"
+}
+
+function toggleMode(){
+
+    if(document.body.style.backgroundColor === "black"){
+
+        document.body.style.backgroundColor = "white"
+        document.body.style.color = "black"
+        localStorage.setItem("mode","light")
+
+    }else{
+
+        document.body.style.backgroundColor = "black"
+        document.body.style.color = "white"
+        localStorage.setItem("mode","dark")
+
+    }
+
+}
+
+</script>
+
+</body>
+</html>
+
+  # Mini App 2 — Sticky Notes App
+  ________________________________
+
+This app allows users to:
+
+Create notes
+
+Delete notes
+
+Save notes in localStorage
+
+Notes remain after page refresh
+
+
+  ##______
+  <!DOCTYPE html>
+<html>
+<head>
+<title>Sticky Notes</title>
+</head>
+
+<body style="font-family:Arial; text-align:center;">
+
+<h1>Sticky Notes</h1>
+
+<input id="noteInput" placeholder="Write note">
+<button onclick="addNote()">Add Note</button>
+
+<ul id="list"></ul>
+
+<script>
+
+let notes = JSON.parse(localStorage.getItem("notes")) || []
+
+function showNotes(){
+
+    let list = document.getElementById("list")
+    list.innerHTML=""
+
+    notes.forEach((note,index)=>{
+
+        let li = document.createElement("li")
+        li.innerHTML = note + " <button onclick='deleteNote("+index+")'>Delete</button>"
+        list.appendChild(li)
+
+    })
+
+}
+
+function addNote(){
+
+    let input = document.getElementById("noteInput")
+
+    notes.push(input.value)
+
+    localStorage.setItem("notes",JSON.stringify(notes))
+
+    input.value=""
+
+    showNotes()
+
+}
+
+function deleteNote(index){
+
+    notes.splice(index,1)
+
+    localStorage.setItem("notes",JSON.stringify(notes))
+
+    showNotes()
+
+}
+
+showNotes()
+
+</script>
+
+</body>
+</html>
