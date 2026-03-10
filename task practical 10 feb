@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Registration Form</title>
+</head>
+
+<body style="font-family:Arial; background:#f4f4f4; text-align:center; padding:30px;">
+
+<h2>Registration Form</h2>
+
+<form id="form">
+
+<input id="name" placeholder="Enter Name"><br><br>
+<span id="nameError" style="color:red"></span><br>
+
+<input id="email" placeholder="Enter Email"><br><br>
+<span id="emailError" style="color:red"></span><br>
+
+<input id="phone" placeholder="Enter Phone"><br><br>
+<span id="phoneError" style="color:red"></span><br>
+
+<input type="password" id="password" placeholder="Enter Password">
+<button type="button" onclick="togglePassword()">Show</button>
+<br><br>
+
+<div id="strength"></div>
+
+<button type="submit">Register</button>
+
+</form>
+
+<script>
+
+let submissions = JSON.parse(localStorage.getItem("submissions")) || []
+
+const nameInput = document.getElementById("name")
+const emailInput = document.getElementById("email")
+const phoneInput = document.getElementById("phone")
+const passwordInput = document.getElementById("password")
+
+nameInput.addEventListener("input", () => {
+
+if(nameInput.value.length < 3){
+document.getElementById("nameError").innerText="Name must be at least 3 characters"
+}else{
+document.getElementById("nameError").innerText=""
+}
+
+})
+
+emailInput.addEventListener("input", () => {
+
+let pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+if(!pattern.test(emailInput.value)){
+document.getElementById("emailError").innerText="Invalid email"
+}else{
+document.getElementById("emailError").innerText=""
+}
+
+})
+
+phoneInput.addEventListener("input", () => {
+
+let pattern = /^[0-9]{10}$/
+
+if(!pattern.test(phoneInput.value)){
+document.getElementById("phoneError").innerText="Phone must be 10 digits"
+}else{
+document.getElementById("phoneError").innerText=""
+}
+
+})
+
+passwordInput.addEventListener("input", () => {
+
+let pass = passwordInput.value
+let strength = "Weak"
+
+if(pass.length > 8 && /[A-Z]/.test(pass) && /[0-9]/.test(pass)){
+strength="Strong"
+}else if(pass.length >=6){
+strength="Medium"
+}
+
+document.getElementById("strength").innerText="Password Strength: " + strength
+
+})
+
+function togglePassword(){
+
+if(passwordInput.type === "password"){
+passwordInput.type="text"
+}else{
+passwordInput.type="password"
+}
+
+}
+
+document.getElementById("form").addEventListener("submit", function(e){
+
+e.preventDefault()
+
+let data = {
+
+name: nameInput.value,
+email: emailInput.value,
+phone: phoneInput.value,
+password: passwordInput.value
+
+}
+
+submissions.push(data)
+
+localStorage.setItem("submissions",JSON.stringify(submissions))
+
+alert("Registration Saved")
+
+this.reset()
+
+})
+
+</script>
+
+</body>
+</html>
