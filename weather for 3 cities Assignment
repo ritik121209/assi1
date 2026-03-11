@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Weather App</title>
+
+<style>
+
+body{
+font-family: Arial;
+text-align:center;
+background:#f2f2f2;
+}
+
+#weather{
+display:flex;
+justify-content:center;
+gap:20px;
+margin-top:20px;
+}
+
+.card{
+background:white;
+padding:20px;
+border-radius:10px;
+width:200px;
+box-shadow:0 0 10px rgba(0,0,0,0.2);
+}
+
+#loader{
+font-size:20px;
+margin-top:20px;
+}
+
+</style>
+</head>
+
+<body>
+
+<h1>Weather Dashboard</h1>
+
+<button onclick="getWeather()">Load Weather</button>
+
+<p id="loader"></p>
+<p id="error" style="color:red"></p>
+
+<div id="weather"></div>
+
+<script>
+
+async function getWeather(){
+
+const loader=document.getElementById("loader")
+const error=document.getElementById("error")
+const container=document.getElementById("weather")
+
+loader.innerText="Loading..."
+error.innerText=""
+container.innerHTML=""
+
+const cities=[
+{name:"Delhi",lat:28.61,lon:77.20},
+{name:"London",lat:51.50,lon:-0.12},
+{name:"New York",lat:40.71,lon:-74.00}
+]
+
+try{
+
+const requests=cities.map(city=>
+fetch(`https://api.open-meteo.com/v1/forecast?latitude=${city.lat}&longitude=${city.lon}&current_weather=true`)
+.then(res=>res.json())
+)
+
+const data=await Promise.all(requests)
+
+loader.innerText=""
+
+data.forEach((weather,i)=>{
+
+const temp=weather.current_weather.temperature
+
+let emoji="☀️"
+
+if(temp<10) emoji="❄️"
+else if(temp<20) emoji="⛅"
+else emoji="🔥"
+
+const card=document.createElement("div")
+card.className="card"
+
+card.innerHTML=`
+<h3>${cities[i].name}</h3>
+<p>${emoji}</p>
+<p>Temperature: ${temp}°C</p>
+`
+
+container.appendChild(card)
+
+})
+
+}
+
+catch(err){
+loader.innerText=""
+error.innerText="Failed to fetch weather data"
+}
+
+}
+
+</script>
+
+</body>
+</html>
